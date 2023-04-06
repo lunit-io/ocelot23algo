@@ -42,11 +42,11 @@ class TIFFIterator:
         if self.cur_patch_idx < self.num_images:
             # Read patch pair and the corresponding id 
             cell_patch = self.cell_tiff.pages[self.cur_patch_idx].asarray()
-            cell_patch = np.rollaxis(cell_patch, 2, 0)
+            cell_patch = np.transpose(cell_patch, (2, 0, 1))
             cell_id = self.cell_tiff.pages[self.cur_patch_idx].description
-
+    
             tissue_patch = self.tissue_tiff.pages[self.cur_patch_idx].asarray()
-            tissue_patch = np.rollaxis(tissue_patch, 2, 0)
+            tissue_patch = np.transpose(tissue_patch, (2, 0, 1))
             tissue_id = self.tissue_tiff.pages[self.cur_patch_idx].description
 
             # We assume the tissue and cell patches are saved aligned

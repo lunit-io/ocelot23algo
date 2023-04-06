@@ -21,6 +21,7 @@ def process():
 
     # NOTE: Batch size is 1
     for cell_patch, tissue_patch, pair_id in sample_pair_iterator:
+        print(f"Processing sample pair {pair_id}")
         # Cell-tissue patch pair inference
         cell_predictions = process_patch_pair(cell_patch, 
                                     tissue_patch, 
@@ -36,3 +37,4 @@ def process():
 
 if __name__ == "__main__":
     process()
+
