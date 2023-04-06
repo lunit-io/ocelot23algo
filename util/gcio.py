@@ -76,27 +76,23 @@ class DetectionWriter:
             output_path = output_path / '.json' 
 
         self._output_path = output_path
-        self._data = {}
-        self._cur_sample = {}
+        self._data = {
+            "type": "Multiple points",
+            "points": [],
+            "version": {"major": 1, "minor": 0},
+        } 
 
     def add_point(self, x:  Union[int, float], y:  Union[int, float], prob: float, sample_id: str):
         Z = 0.5
-        point = {"point": [float(x), float(y), Z], "probability": prob}
-        if sample_id not in self._data:
-            multiple_point = {
-                "type": "Multiple points",
-                "points": [],
-                "version": {"major": 1, "minor": 0},
-            } 
-            self._data[sample_id] = multiple_point
-        self._data[sample_id]["points"].append(point)
+        point = {"name": sample_id, "point": [float(x), float(y), Z], "probability": prob}
+        self._data["points"].append(point)
 
     def add_points(self, points: List, sample_id: str):
         for x, y, prob in points:
             self.add_point(x, y, prob, sample_id)
 
     def save(self):
-        assert len(self._data) > 0, "No cells were predicted"
+        assert len(self._data["points"]) > 0, "No cells were predicted"
         with open(self._output_path, "w", encoding="utf-8") as f:
             json.dump(self._data, f, ensure_ascii=False, indent=4)
         print(f"Predictions were saved at `{self._output_path}`")
