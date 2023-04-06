@@ -82,14 +82,20 @@ class DetectionWriter:
             "version": {"major": 1, "minor": 0},
         } 
 
-    def add_point(self, x:  Union[int, float], y:  Union[int, float], prob: float, sample_id: str):
-        Z = 0.5
-        point = {"name": sample_id, "point": [float(x), float(y), Z], "probability": prob}
+    def add_point(self, x:  Union[int, float], 
+            y:  Union[int, float], 
+            class_id: Union[int, float], 
+            prob: float, sample_id: str):
+
+        point = {
+            "name": sample_id, 
+            "point": [float(x), float(y), class_id], 
+            "probability": prob}
         self._data["points"].append(point)
 
     def add_points(self, points: List, sample_id: str):
-        for x, y, prob in points:
-            self.add_point(x, y, prob, sample_id)
+        for x, y, c, prob in points:
+            self.add_point(x, y, c, prob, sample_id)
 
     def save(self):
         assert len(self._data["points"]) > 0, "No cells were predicted"

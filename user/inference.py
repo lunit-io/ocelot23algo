@@ -36,5 +36,11 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     prediction[(cell_patch[2, :, :] <= 40)] = 1
     xs, ys = np.where(prediction.transpose() == 1)
     probs = [1.0] * len(xs) # Confidence score
+    class_id = [1] * len(xs) # Type of cell
 
-    return list(zip(xs, ys, probs))
+    # We need to return a list of tuples with 4 elements, i.e.:
+    # - cell's x-coordinate in the cell patch
+    # - cell's y-coordinate in the cell patch
+    # - class id of the cell, either 1 (BC) or 2 (TC)
+    # - confidence score of the predicted cell
+    return list(zip(xs, ys, class_id, probs))
