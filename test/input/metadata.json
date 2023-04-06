@@ -2,7 +2,7 @@
   "general_info": {
     "description": "The OCELOT 2023 dataset is a histopathology dataset designed to facilitate the development of methods that utilize cell and tissue relationships. The dataset comprises both small and large field-of-view (FoV) patches extracted from digitally scanned whole slide images (WSIs), with overlapping regions. The small and large FoV patches are accompanied by annotations of cells and tissues, respectively. The WSIs are sourced from the publicly available TCGA database and were stained using the H&E method before being scanned with an Aperio scanner.",
     "url": "https://lunit-io.github.io/research/ocelot_dataset/",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "version_log": "",
     "year": "2023",
     "organization": "Lunit Inc.",
