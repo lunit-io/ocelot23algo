@@ -1,0 +1,64 @@
+{
+  "general_info": {
+    "description": "The OCELOT 2023 dataset is a histopathology dataset designed to facilitate the development of methods that utilize cell and tissue relationships. The dataset comprises both small and large field-of-view (FoV) patches extracted from digitally scanned whole slide images (WSIs), with overlapping regions. The small and large FoV patches are accompanied by annotations of cells and tissues, respectively. The WSIs are sourced from the publicly available TCGA database and were stained using the H&E method before being scanned with an Aperio scanner.",
+    "url": "https://lunit-io.github.io/research/ocelot_dataset/",
+    "version": "1.0.0",
+    "version_log": "",
+    "year": "2023",
+    "organization": "Lunit Inc.",
+    "license": "Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). You are permitted to utilize any of the material in your own research, provided that you acknowledge the source by citing the paper `OCELOT: Overlapped Cell on Tissue Dataset for Histopathology`. This license is intended for non-commercial research purposes only. Any use of the material for commercial purposes is strictly prohibited."
+  },
+  "label_info": {
+    "cell": {
+      "1": "BC (Background Cell)",
+      "2": "TC (Tumor Cell)"
+    },
+    "tissue": {
+      "1": "BG (Background)",
+      "2": "CA (Cancer Area)",
+      "255": "UNK (Unknown)"
+    }
+  },
+  "field_description": {
+    "slide_name": "TCGA Slide name. To obtain additional information about the slide or case, you can query https://portal.gdc.cancer.gov/ with this slide name.",
+    "patch_x_offset": "x-coordinate representing the relative center location of the cell patch within the tissue patch",
+    "patch_y_offset": "y-coordinate representing the relative center location of the cell patch within the tissue patch",
+    "mpp_x": "Micron-Per-Pixel (MPP) value of the slide, along the x-axis.",
+    "mpp_y": "Micron-Per-Pixel (MPP) value of the slide, along the y-axis.",
+    "organ": "The organ where the sample was taken from.",
+    "subset": "Partition of the dataset, i.e. train, val or test",
+    "x_start": "x-coordinate representing the start of the coordinate range that specifies the cell or tissue patch within the Whole-Slide-Image (WSI). Specifically, the patch is extracted from the pixels between x_start (inclusive) and x_end (exclusive) within the WSI. The top-left corner pixel is assigned the coordinates (0,0).",
+    "y_start": "y-coordinate representing the start of the coordinate range that specifies the cell or tissue patch within the Whole-Slide-Image (WSI). Specifically, the patch is extracted from the pixels between x_start (inclusive) and x_end (exclusive) within the WSI. The top-left corner pixel is assigned the coordinates (0,0).",
+    "x_end": "x-coordinate representing the end of the coordinate range that specifies the cell or tissue patch within the Whole-Slide-Image (WSI). Specifically, the patch is extracted from the pixels between x_start (inclusive) and x_end (exclusive) within the WSI. The top-left corner pixel is assigned the coordinates (0,0).",
+    "y_end": "y-coordinate representing the end of the coordinate range that specifies the cell or tissue patch within the Whole-Slide-Image (WSI). Specifically, the patch is extracted from the pixels between x_start (inclusive) and x_end (exclusive) within the WSI. The top-left corner pixel is assigned the coordinates (0,0).",
+    "resized_mpp_x": "Micron-Per-Pixel (MPP) value of the resized patch, along the x-axis.",
+    "resized_mpp_y": "Micron-Per-Pixel (MPP) value of the resized patch, along the y-axis."
+  },
+  "sample_pairs": {
+    "004": {
+      "slide_name": "TCGA-A3-3328-01Z-00-DX1.8FA7DFCD-D6FD-4950-9E44-E5AB0B91E33D",
+      "cell": {
+        "x_start": 59847,
+        "y_start": 45290,
+        "x_end": 60655,
+        "y_end": 46098,
+        "resized_mpp_x": 0.19426718377508223,
+        "resized_mpp_y": 0.19426718377508223
+      },
+      "tissue": {
+        "x_start": 58230,
+        "y_start": 45290,
+        "x_end": 61465,
+        "y_end": 48525,
+        "resized_mpp_x": 0.7777900241489988,
+        "resized_mpp_y": 0.7777900241489988
+      },
+      "patch_x_offset": 0.625,
+      "patch_y_offset": 0.125,
+      "mpp_x": 0.24619999527931213,
+      "mpp_y": 0.24619999527931213,
+      "organ": "kidney",
+      "subset": "train"
+    }
+  }
+}
