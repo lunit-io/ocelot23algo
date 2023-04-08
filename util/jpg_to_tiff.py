@@ -158,15 +158,15 @@ def validate_concatenated_tiff():
         cell_patches = np.array(Image.open(cell_tif))
         tissue_patches = np.array(Image.open(tissue_tif))
 
+        root = os.path.join(ROOT, TARGET_FOLDER, split)
+        file_list = sorted(glob.glob(os.path.join(root, "cell") + '/*'))
+
         dataset_size = cell_patches.shape[0] // 1024
         assert dataset_size > 0
         for i in range(dataset_size):
             cell_patch = cell_patches[i*1024:(i+1)*1024,:,:]
             tissue_patch = tissue_patches[i*1024:(i+1)*1024,:,:]
 
-            root = os.path.join(ROOT, TARGET_FOLDER, split)
-
-            file_list = sorted(glob.glob(os.path.join(root, "cell") + '/*'))
             pair_id = os.path.split(file_list[i])[1]
             
             or_cell_fpath = os.path.join(root, "cell", f"{pair_id}")
