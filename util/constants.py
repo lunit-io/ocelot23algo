@@ -1,17 +1,13 @@
 from pathlib import Path
 
 # Grand Challenge folders were input files can be found
+# GC_CELL_FPATH = Path("/input/images/cell_patches/")
+GC_CELL_FPATH = Path("test/input/images/cell_patches/")
 
-# GC_CELL_FPATH = Path("/input/images/cell_patches/cell_patches.tif")
-# GC_CELL_FPATH = Path("util/tiff_for_grand_challenge/cell_patches/cell_test.tif")
-GC_CELL_FPATH = Path("test/input/images/cell_patches/000.tif")
-
-# GC_TISSUE_FPATH = Path("/input/images/tissue_patches/tissue_patches.tif")
-# GC_TISSUE_FPATH = Path("util/tiff_for_grand_challenge/tissue_patches/tissue_test.tif")
-GC_TISSUE_FPATH = Path("test/input/images/tissue_patches/000.tif")
+# GC_TISSUE_FPATH = Path("/input/images/tissue_patches/")
+GC_TISSUE_FPATH = Path("test/input/images/tissue_patches/")
 
 # GC_METADATA_FPATH = Path("/input/metadata.json")
-# GC_METADATA_FPATH = Path("util/ocelot2023_v1.0.0/metadata.json")
 GC_METADATA_FPATH = Path("test/input/metadata.json")
 
 # Grand Challenge output file
