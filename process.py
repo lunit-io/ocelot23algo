@@ -10,8 +10,8 @@ from user.inference import process_patch_pair
 
 def process():
     """Process a test patches"""
-    # Initialize the data iterator
-    sample_pair_iterator = gcio.TIFFIterator(GC_CELL_FPATH, GC_TISSUE_FPATH)
+    # Initialize the data loader
+    loader = gcio.DataLoader(GC_CELL_FPATH, GC_TISSUE_FPATH)
 
     # Cell detection writer
     writer = gcio.DetectionWriter(GC_DETECTION_OUTPUT_PATH)
@@ -20,7 +20,7 @@ def process():
     meta_dataset = gcio.read_json(GC_METADATA_FPATH)
 
     # NOTE: Batch size is 1
-    for cell_patch, tissue_patch, pair_id in sample_pair_iterator:
+    for cell_patch, tissue_patch, pair_id in loader:
         print(f"Processing sample pair {pair_id}")
         # Cell-tissue patch pair inference
         cell_predictions = process_patch_pair(cell_patch, 
