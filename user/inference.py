@@ -1,5 +1,4 @@
 import numpy as np
-from typing import List, Dict
 
 
 def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
@@ -7,7 +6,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     providing the broader tissue context
 
     NOTE: this function offers a dummy example inference code. This must be
-    updated by the user.
+    updated by the participant.
 
     Parameters
     ----------
@@ -25,10 +24,10 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
         List[tuple]: list of tuples (x,y) coordinates of detections
     """
     # Getting the metadata corresponding to the patch pair ID
-    meta_pair = meta_dataset["sample_pairs"][pair_id]
+    meta_pair = meta_dataset[pair_id]
 
-    ############################################# 
-    ##### THE INFERENCE ALGORHTM GOES HERE ######
+    #############################################
+    #### YOUR INFERENCE ALGORHTM GOES HERE ######
     #############################################
 
     # The following is a dummy cell detection algoritm
@@ -37,6 +36,10 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     xs, ys = np.where(prediction.transpose() == 1)
     probs = [1.0] * len(xs) # Confidence score
     class_id = [1] * len(xs) # Type of cell
+
+    #############################################
+    ####### RETURN RESULS PER SAMPLE ############
+    #############################################
 
     # We need to return a list of tuples with 4 elements, i.e.:
     # - cell's x-coordinate in the cell patch
