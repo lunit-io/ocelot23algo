@@ -1,8 +1,11 @@
+import os
 from pathlib import Path
 import numpy as np
-import tifffile
+from PIL import Image
 import json
 from typing import Union, List
+
+SAMPLE_SHAPE = (1024,1024,3)
 
 
 def read_json(fpath: Path) -> dict:
@@ -23,40 +26,50 @@ def read_json(fpath: Path) -> dict:
     return data
 
 
-class TIFFIterator:
-    def __init__(self, cell_fpath, tissue_fpath):
-        self.tissue_fpath = cell_fpath
-        self.cell_fpath = cell_fpath
-        self.cell_tiff = tifffile.TiffFile(cell_fpath)
-        self.tissue_tiff = tifffile.TiffFile(tissue_fpath)
+class DataLoader:
+    def __init__(self, cell_path, tissue_path):
+        cell_fpath = [os.path.join(cell_path, f) for f in os.listdir(cell_path) if ".tif" in f]
+        tissue_fpath = [os.path.join(tissue_path, f) for f in os.listdir(tissue_path) if ".tif" in f]
+        assert len(cell_fpath) == len(tissue_fpath) == 1
 
-        self.num_images = len(self.cell_tiff.pages)
-        assert len(self.cell_tiff.pages) == len(self.tissue_tiff.pages)
+        self.cell_patches = np.array(Image.open(cell_fpath[0]))
+        self.tissue_patches = np.array(Image.open(tissue_fpath[0]))
 
-        self.cur_patch_idx = 0
+        assert (self.cell_patches.shape[1:] == SAMPLE_SHAPE[1:]), \
+            "The same of the input cell patch is incorrect"
+        assert (self.tissue_patches.shape[1:] == SAMPLE_SHAPE[1:]), \
+            "The same of the input tissue patch is incorrect"
+
+        # Samples are concatenated across the first axis
+        assert self.cell_patches.shape[0] % SAMPLE_SHAPE[0] == 0
+        assert self.tissue_patches.shape[0] % SAMPLE_SHAPE[0] == 0
+
+        self.num_images = self.cell_patches.shape[0] // SAMPLE_SHAPE[0]
+
+        assert self.num_images == self.tissue_patches.shape[0]//SAMPLE_SHAPE[0], \
+            "Cell and tissue patches have different number of instances"
+
+        self.cur_idx = 0
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.cur_patch_idx < self.num_images:
+        if self.cur_idx < self.num_images:
             # Read patch pair and the corresponding id 
-            cell_patch = self.cell_tiff.pages[self.cur_patch_idx].asarray()
+            cell_patch = self.cell_patches[self.cur_idx*SAMPLE_SHAPE[0]:(self.cur_idx+1)*SAMPLE_SHAPE[0],:,:]
             cell_patch = np.transpose(cell_patch, (2, 0, 1))
-            cell_id = self.cell_tiff.pages[self.cur_patch_idx].description
     
-            tissue_patch = self.tissue_tiff.pages[self.cur_patch_idx].asarray()
+            tissue_patch = self.tissue_patches[self.cur_idx*SAMPLE_SHAPE[0]:(self.cur_idx+1)*SAMPLE_SHAPE[0],:,:]
             tissue_patch = np.transpose(tissue_patch, (2, 0, 1))
-            tissue_id = self.tissue_tiff.pages[self.cur_patch_idx].description
 
-            # We assume the tissue and cell patches are saved aligned
-            assert cell_id == tissue_id
+            pair_id = self.cur_idx
 
             # Increment the current image index
-            self.cur_patch_idx += 1
+            self.cur_idx += 1
 
             # Return the image data
-            return cell_patch, tissue_patch, cell_id
+            return cell_patch, tissue_patch, pair_id
         else:
             # Raise StopIteration when no more images are available
             raise StopIteration
@@ -83,13 +96,13 @@ class DetectionWriter:
         } 
 
     def add_point(self, x:  Union[int, float], 
-            y:  Union[int, float], 
-            class_id: Union[int, float], 
-            prob: float, sample_id: str):
+            y:  Union[int, float],
+            class_id: Union[int, float],
+            prob: float, sample_id: int):
 
         point = {
-            "name": sample_id, 
-            "point": [float(x), float(y), class_id], 
+            "name": str(sample_id),
+            "point": [float(x), float(y), float(class_id)],
             "probability": prob}
         self._data["points"].append(point)
 
