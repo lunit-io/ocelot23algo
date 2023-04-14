@@ -24,9 +24,10 @@ docker run --rm \
 
 echo "Done initializing container"
 
-docker run --rm \
-        -v ocelot23algo-output:/output/ \
-        python:3.9-slim cat /output/cell_predictions.json | python -m json.tool
+# To print the prediction outputs. This could be too verbose
+# docker run --rm \
+#         -v ocelot23algo-output:/output/ \
+#         python:3.9-slim cat /output/cell_predictions.json | python -m json.tool
 
 echo "Done running the processing script"
 
@@ -36,9 +37,9 @@ docker run --rm \
         python:3.9-slim python -c "import json, sys; f = json.load(open('/output/cell_predictions.json')); sys.exit(not len(f)>0);"
 
 if [ $? -eq 0 ]; then
-    echo "Tests successfully passed..."
+    echo "Tests successfully passed"
 else
-    echo "Expected output was not found..."
+    echo "Expected output was not found"
 fi
 
 docker volume rm ocelot23algo-output
