@@ -104,7 +104,7 @@ bash test.sh
 ```
 ### Export algorithm docker image
 
-Generate the file to be uploaded to GC by running the following script:
+Generate the `tar` file to be uploaded to GC by running the following command:
 
 ```bash
 bash export.sh
