@@ -30,7 +30,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     #### YOUR INFERENCE ALGORHTM GOES HERE ######
     #############################################
 
-    # The following is a dummy cell detection algoritm
+    # The following is a dummy cell detection algorithm
     prediction = np.copy(cell_patch[2, :, :])
     prediction[(cell_patch[2, :, :] <= 40)] = 1
     xs, ys = np.where(prediction.transpose() == 1)
