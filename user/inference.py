@@ -27,7 +27,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     meta_pair = meta_dataset[pair_id]
 
     #############################################
-    #### YOUR INFERENCE ALGORHTM GOES HERE ######
+    #### YOUR INFERENCE ALGORITHM GOES HERE #####
     #############################################
 
     # The following is a dummy cell detection algorithm

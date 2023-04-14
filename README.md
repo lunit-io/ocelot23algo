@@ -1,13 +1,13 @@
 # OCELOT23: The algorithm
-
-In this repository you will find the source code for the Grand Challenge OCELOT23 algorithm container.
-
-
+ 
+In this repository you will find the source code for the Grand Challenge OCELOT23 algorithm container. Ocelot is both a MICCAI challenge and an accepeted paper at CVPR 23.
+ 
 # Input and output
+ 
+* The input: the container searches loads and iterates over the validation images, test images and metadata from the already uploaded data in Grand Challenge. The implemented loader `DataLoader` at `util.gcio.py` will iterate over the samples for you!. 
 
-* The input
+* The output: your algorithm needs to predict cells with the Multiple Points format. To make things easier like with the data loader, we implemented a simple writer class `DetectionWriter` to output the corresponding output file `cell_predictions.json`. An example of the output can be found in `test/output/example_output.json`.
 
-* The output
 ```json
 {
     "type": "Multiple points",
@@ -31,9 +31,10 @@ In this repository you will find the source code for the Grand Challenge OCELOT2
             "probability": 1.0
         },
 ```
+
 # Develop you algorithm
 
-At `user/inference.py` you will find the example code to be updated
+At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to modify the function `process_patch_pair` trying to keep the format used below. Feel free to install any framework, such as PyTorch or Tensorflow to run your code. In addition, do not forget to add your dependencies in `requirement.txt` so that your container can be build correctly.
 
 ```python
 def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
@@ -62,7 +63,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     meta_pair = meta_dataset[pair_id]
 
     #############################################
-    #### YOUR INFERENCE ALGORHTM GOES HERE ######
+    #### YOUR INFERENCE ALGORITHM GOES HERE #####
     #############################################
 
     # The following is a dummy cell detection algoritm
@@ -86,23 +87,27 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
 
 # Submitting to GC
 
-## Build your docker image
+To submit your algorithm to the GC platform, you'll need to export the docker container wrapping your code.
+
+### Build your docker image
 
 ```bash
 bash build.sh
 ```
-## Testing before submitting to GC
+
+### Testing before submitting to GC
+
+Before submitting your containers to GC, make sure this simple test works in your local machine. This script will create the image, run the container and verify that the output `cell_predictions.json` at the output directory. To do so, run the following command:
 
 ```bash
 bash test.sh
 ```
-## Export algorithm docker image
+### Export algorithm docker image
+
+Generate the file to be uploaded to GC by running the following script:
 
 ```bash
 bash export.sh
 ```
 
 # Cite
-
-
-# References
