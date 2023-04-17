@@ -22,14 +22,7 @@ docker run --rm \
         -v ocelot23algo-output:/output/ \
         ocelot23algo
 
-echo "Done initializing container"
-
-# To print the prediction outputs. This could be too verbose
-# docker run --rm \
-#         -v ocelot23algo-output:/output/ \
-#         python:3.9-slim cat /output/cell_predictions.json | python -m json.tool
-
-echo "Done running the processing script"
+echo "Done initializing container and running inference"
 
 docker run --rm \
         -v ocelot23algo-output:/output/ \

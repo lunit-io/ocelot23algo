@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 import json
-from typing import Union, List
+from typing import List
 
 SAMPLE_SHAPE = (1024,1024,3)
 
@@ -95,14 +95,14 @@ class DetectionWriter:
             "version": {"major": 1, "minor": 0},
         } 
 
-    def add_point(self, x:  Union[int, float], 
-            y:  Union[int, float],
-            class_id: Union[int, float],
+    def add_point(self, x: int, 
+            y: int,
+            class_id: int,
             prob: float, sample_id: int):
 
         point = {
-            "name": str(sample_id),
-            "point": [float(x), float(y), float(class_id)],
+            "name": "image_{}".format(str(sample_id)),
+            "point": [int(x), int(y), int(class_id)],
             "probability": prob}
         self._data["points"].append(point)
 
