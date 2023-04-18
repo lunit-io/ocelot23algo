@@ -45,10 +45,10 @@ At `user/inference.py` you will find a dummy cell detection algorithm. Your task
 
 ```python
 def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
-    """This function detects the cells in the cell patch, while additionally
-    providing the broader tissue context
+    """This function detects the cells in the cell patch. Additionally
+    the broader tissue context is provided. 
 
-    NOTE: this function offers a dummy example inference code. This must be
+    NOTE: this implementation offers a dummy inference example. This must be
     updated by the participant.
 
     Parameters
@@ -58,7 +58,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     tissue_patch: np.ndarray[uint8] 
         Tissue patch with shape [1024, 1024, 3] with values from 0 - 255
     pair_id: str
-        identification number of the patch pair
+        Identification number of the patch pair
     meta_dataset: Dict
         Dataset metadata in case you wish to compute statistics
 
@@ -77,8 +77,8 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     prediction = np.copy(cell_patch[:, :, 2])
     prediction[(cell_patch[:, :, 2] <= 40)] = 1
     xs, ys = np.where(prediction.transpose() == 1)
-    probs = [1.0] * len(xs) # Confidence score
     class_id = [1] * len(xs) # Type of cell
+    probs = [1.0] * len(xs) # Confidence score
 
     #############################################
     ####### RETURN RESULS PER SAMPLE ############
