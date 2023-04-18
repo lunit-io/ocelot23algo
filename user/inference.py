@@ -21,7 +21,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
 
     Returns
     -------
-        List[tuple]: list of tuples (x, y, cls, score) for each predicted cell
+        List[tuple]: for each predicted cell we provide the tuple (x, y, cls, score)
     """
     # Getting the metadata corresponding to the patch pair ID
     meta_pair = meta_dataset[pair_id]
