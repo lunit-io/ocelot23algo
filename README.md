@@ -6,9 +6,9 @@ In this repository, you can find the source code for the [Grand Challenge OCELOT
 # Input and output
  
 We already implemented for you the input/output interface for loading the input images stored in the platform and writing the cell predictions. Here the relevant code:
-* The input: the container loads and iterates over the validation images, test images and metadata from the already uploaded data in Grand Challenge (not visible to partipants). The implemented data loader `DataLoader` at `util.gcio.py` will iterate over the samples for you!. 
+* Input: the data loader `DataLoader` located at `util.gcio.py` is implemented to iterate over all samples (not visible to partipants). You can find a test example with the corresponding tree under `test/input/`. 
 
-* The output: your algorithm needs to predict cells with the [Multiple Points](https://comic.github.io/grand-challenge.org/components.html#grandchallenge.components.models.InterfaceKind.interface_type_json) format. To make things easier, we developed a simple writer class `DetectionWriter` to output the corresponding output file `cell_predictions.json`. An example of the output can be found in `test/output/example_output.json`.
+* Output: your algorithm needs to predict cells with the [Multiple Points](https://comic.github.io/grand-challenge.org/components.html#grandchallenge.components.models.InterfaceKind.interface_type_json) format. To make things easier, we developed a simple writer class `DetectionWriter` to generate the corresponding output file `cell_predictions.json`. An example of the output can be found at `test/output/example_output.json`.
 
 ```json
 {
@@ -36,12 +36,12 @@ We already implemented for you the input/output interface for loading the input 
 Where each cell prediction requires the following information:
 
 * `name`: cell patch identifier, which is composed of the keyword `image` followed by the sequential image ID of the cell patch. The ID is the same as the one provided by the `DataLoader`.
-* `point`: list of three intiger, i.e. x, y and class ID.
+* `point`: list of three integer, i.e. x, y and class ID.
 * `probability`: confidence score of the predicted cell.
 
 # Develop you algorithm
 
-At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to propose a new algorithm by modifying the function `process_patch_pair` while keeping the returned format used below. Feel free to install any framework, such as PyTorch or Tensorflow by adding your dependencies in `requirements.txt`.
+At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to propose a new algorithm by modifying the function `process_patch_pair` while keeping the output format. Also, feel free to install any framework, such as PyTorch or Tensorflow by adding your dependencies in `requirements.txt`.
 
 ```python
 def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
