@@ -1,6 +1,6 @@
 # OCELOT23: The algorithm
  
-In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) algorithm container. We highly recommend using this repository as template for your algorithm submissions. For more information refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
+In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) algorithm container. We highly recommend using this repository as template for your algorithm submissions. For more information about our work refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
 
  
 # Input and output
