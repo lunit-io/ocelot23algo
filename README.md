@@ -53,10 +53,10 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
 
     Parameters
     ----------
-    cell_patch: np.ndarray 
-        Cell patch with shape [3, 1024, 1024]
-    tissue_patch: np.ndarray 
-        Tissue patch with shape [3, 1024, 1024]
+    cell_patch: np.ndarray[uint8]
+        Cell patch with shape [1024, 1024, 3] with values from 0 - 255
+    tissue_patch: np.ndarray[uint8] 
+        Tissue patch with shape [1024, 1024, 3] with values from 0 - 255
     pair_id: str
         identification number of the patch pair
     meta_dataset: Dict
@@ -64,7 +64,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
 
     Returns
     -------
-        List[tuple]: list of tuples (x,y) coordinates of detections
+        List[tuple]: list of tuples (x, y, cls, score) for each predicted cell
     """
     # Getting the metadata corresponding to the patch pair ID
     meta_pair = meta_dataset[pair_id]
@@ -73,9 +73,9 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     #### YOUR INFERENCE ALGORITHM GOES HERE #####
     #############################################
 
-    # The following is a dummy cell detection algoritm
-    prediction = np.copy(cell_patch[2, :, :])
-    prediction[(cell_patch[2, :, :] <= 40)] = 1
+    # The following is a dummy cell detection algorithm
+    prediction = np.copy(cell_patch[:, :, 2])
+    prediction[(cell_patch[:, :, 2] <= 40)] = 1
     xs, ys = np.where(prediction.transpose() == 1)
     probs = [1.0] * len(xs) # Confidence score
     class_id = [1] * len(xs) # Type of cell
@@ -85,10 +85,10 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     #############################################
 
     # We need to return a list of tuples with 4 elements, i.e.:
-    # - cell's x-coordinate in the cell patch
-    # - cell's y-coordinate in the cell patch
-    # - class id of the cell, either 1 (BC) or 2 (TC)
-    # - confidence score of the predicted cell
+    # - int: cell's x-coordinate in the cell patch
+    # - int: cell's y-coordinate in the cell patch
+    # - int: class id of the cell, either 1 (BC) or 2 (TC)
+    # - float: confidence score of the predicted cell
     return list(zip(xs, ys, class_id, probs))
 ```
 

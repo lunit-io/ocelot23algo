@@ -58,10 +58,7 @@ class DataLoader:
         if self.cur_idx < self.num_images:
             # Read patch pair and the corresponding id 
             cell_patch = self.cell_patches[self.cur_idx*SAMPLE_SHAPE[0]:(self.cur_idx+1)*SAMPLE_SHAPE[0],:,:]
-            cell_patch = np.transpose(cell_patch, (2, 0, 1))
-    
             tissue_patch = self.tissue_patches[self.cur_idx*SAMPLE_SHAPE[0]:(self.cur_idx+1)*SAMPLE_SHAPE[0],:,:]
-            tissue_patch = np.transpose(tissue_patch, (2, 0, 1))
 
             pair_id = self.cur_idx
 
@@ -76,14 +73,17 @@ class DataLoader:
 
 
 class DetectionWriter:
-    """Writes detection to json format that can be handled by grand challenge"""
+    """ This class writes the cell predictions to the designated 
+    json file path with the Multiple Point format required by 
+    Grand Challenge
+
+    Parameters
+    ----------
+    output: Path
+        output_path (Path): path to json output file
+    """
 
     def __init__(self, output_path: Path):
-        """init
-
-        Args:
-            output_path (Path): path to json output file
-        """
 
         if output_path.suffix != '.json':
             output_path = output_path / '.json' 
@@ -95,10 +95,14 @@ class DetectionWriter:
             "version": {"major": 1, "minor": 0},
         } 
 
-    def add_point(self, x: int, 
+    def add_point(
+            self, 
+            x: int, 
             y: int,
             class_id: int,
-            prob: float, sample_id: int):
+            prob: float, 
+            sample_id: int
+        ):
 
         point = {
             "name": "image_{}".format(str(sample_id)),
