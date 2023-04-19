@@ -8,7 +8,7 @@ In this repository, you can find the source code for the [Grand Challenge OCELOT
 # Input and output
  
 We already implemented for you the input/output interface for loading the input images stored in the platform and writing the cell predictions. Here the relevant code:
-* Input: the data loader `DataLoader` located at `util.gcio.py` is implemented to iterate over all samples (not visible to partipants). You can find a test example with the corresponding tree under `test/input/`. 
+* Input: the data loader `DataLoader` located at `util.gcio.py` is implemented to iterate over all samples (not visible to partipants). You can find a test example with the corresponding tree under `test/input/`. Notice that there is only one file for cell and another for tissue samples for each phase. As suggested by [Grand Challenge](https://grand-challenge.org/documentation/create-your-own-challenge/), we decided to stack all cell and tissue patches across the first image dimension in order to reduce the number of files. You can find the logic to handle this at the `DataLoader`.
 
 * Output: your algorithm needs to predict cells with the [Multiple Points](https://comic.github.io/grand-challenge.org/components.html#grandchallenge.components.models.InterfaceKind.interface_type_json) format. To make things easier, we developed a simple writer class `DetectionWriter` to generate the corresponding output file `cell_predictions.json`. An example of the output can be found at `test/output/example_output.json`.
 
