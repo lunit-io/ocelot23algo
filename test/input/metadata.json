@@ -22,7 +22,6 @@
       "mpp_x": 0.24619999527931213,
       "mpp_y": 0.24619999527931213,
       "organ": "kidney",
-      "subset": "train",
-      "pair_id": "004"
+      "subset": "train"
     }
 ]

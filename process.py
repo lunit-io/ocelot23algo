@@ -9,7 +9,9 @@ from user.inference import process_patch_pair
 
 
 def process():
-    """Process a test patches"""
+    """Process a test patches. This involves iterating over samples,
+    inferring and write the cell predictions
+    """
     # Initialize the data loader
     loader = gcio.DataLoader(GC_CELL_FPATH, GC_TISSUE_FPATH)
 
