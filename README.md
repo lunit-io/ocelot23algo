@@ -1,3 +1,5 @@
+![OCELOT LOGO](logo/ocelot_banner.png)
+
 # OCELOT 2023: Cell Detection from Cell-Tissue Interaction
  
 In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) **algorithm container**. We highly recommend using this repository as template for your algorithm submissions. The main purpose of your algorithm submission is to run only inference on the validation and test cell and tissue images already living in the GC platform. For more information about our work refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
