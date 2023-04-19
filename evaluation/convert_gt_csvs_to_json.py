@@ -18,9 +18,12 @@ def main(dataset_root_path, subset):
     """
 
     assert os.path.exists(f"{dataset_root_path}/annotations/{subset}")
+    gt_paths = sorted(glob.glob(f"{dataset_root_path}/annotations/{subset}/cell/*.csv"))
+    num_images = len(gt_paths)
 
     gt_json = {
         "type": "Multiple points",
+        "num_images": num_images,
         "points": [],
         "version": {
             "major": 1,
@@ -28,7 +31,6 @@ def main(dataset_root_path, subset):
         }
     }
     
-    gt_paths = sorted(glob.glob(f"{dataset_root_path}/annotations/{subset}/cell/*.csv"))
     for idx, gt_path in enumerate(gt_paths):
         with open(gt_path, "r") as f:
             lines = f.read().splitlines()
