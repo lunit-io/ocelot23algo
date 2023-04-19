@@ -27,7 +27,7 @@ echo "Done initializing container and running inference"
 docker run --rm \
         -v ocelot23algo-output:/output/ \
         -v $SCRIPTPATH/test/:/input/ \
-        python:3.9-slim python -c "import json, sys; f = json.load(open('/output/cell_predictions.json')); sys.exit(not len(f)>0);"
+        python:3.9-slim python -c "import json, sys; f = json.load(open('/output/cell_classification.json')); sys.exit(not len(f)>0);"
 
 if [ $? -eq 0 ]; then
     echo "Tests successfully passed"

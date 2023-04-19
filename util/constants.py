@@ -7,4 +7,4 @@ GC_TISSUE_FPATH = Path("/input/images/tissue_patches/")
 GC_METADATA_FPATH = Path("/input/metadata.json")
 
 # Grand Challenge output file
-GC_DETECTION_OUTPUT_PATH = Path("/output/cell_predictions.json")
+GC_DETECTION_OUTPUT_PATH = Path("/output/cell_classification.json")

@@ -25,13 +25,13 @@ def process():
     for cell_patch, tissue_patch, pair_id in loader:
         print(f"Processing sample pair {pair_id}")
         # Cell-tissue patch pair inference
-        cell_predictions = process_patch_pair(cell_patch, 
+        cell_classification = process_patch_pair(cell_patch, 
                                     tissue_patch, 
                                     pair_id,
                                     meta_dataset)
         
         # Updating predictions
-        writer.add_points(cell_predictions, pair_id)
+        writer.add_points(cell_classification, pair_id)
 
     # Export the prediction into a json file
     writer.save()

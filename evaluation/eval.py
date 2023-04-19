@@ -198,7 +198,7 @@ def main():
     """
 
     # Path where algorithm output is stored
-    algorithm_output_path = "cell_predictions.json"
+    algorithm_output_path = "cell_classification.json"
     with open(algorithm_output_path, "r") as f:
         pred_json = json.load(f)["points"]
     

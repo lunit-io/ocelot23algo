@@ -10,7 +10,7 @@ In this repository, you can find the source code for the [Grand Challenge OCELOT
 We already implemented for you the input/output interface for loading the input images stored in the platform and writing the cell predictions. Here the relevant code:
 * Input: the data loader `DataLoader` located at `util.gcio.py` is implemented to iterate over all samples (not visible to partipants). You can find a test example with the corresponding tree under `test/input/`. 
 
-* Output: your algorithm needs to predict cells with the [Multiple Points](https://comic.github.io/grand-challenge.org/components.html#grandchallenge.components.models.InterfaceKind.interface_type_json) format. To make things easier, we developed a simple writer class `DetectionWriter` to generate the corresponding output file `cell_predictions.json`. An example of the output can be found at `test/output/example_output.json`.
+* Output: your algorithm needs to predict cells with the [Multiple Points](https://comic.github.io/grand-challenge.org/components.html#grandchallenge.components.models.InterfaceKind.interface_type_json) format. To make things easier, we developed a simple writer class `DetectionWriter` to generate the corresponding output file `cell_classification.json`. An example of the output can be found at `test/output/example_output.json`.
 
 ```json
 {
@@ -108,7 +108,7 @@ bash build.sh
 
 ## Testing before submitting to GC
 
-Before submitting your containers to GC, make sure a simple test works successfully in your local machine. The script `test.sh` will create the image, run a container and verify that the output file `cell_predictions.json` is generated at the designated directory. To do so, simply run the following command:
+Before submitting your containers to GC, make sure a simple test works successfully in your local machine. The script `test.sh` will create the image, run a container and verify that the output file `cell_classification.json` is generated at the designated directory. To do so, simply run the following command:
 
 ```bash
 bash test.sh
