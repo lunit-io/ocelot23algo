@@ -28,7 +28,9 @@ def read_json(fpath: Path) -> dict:
 
 class DataLoader:
     """This class is meant to load and iterate over the samples
-    already uploaded to GC platform.
+    already uploaded to GC platform. All cell and tissue samples are
+    concatenated/stacked together sequentially in a single file, one
+    for cell and another for tissue.
 
     Parameters
     ----------
