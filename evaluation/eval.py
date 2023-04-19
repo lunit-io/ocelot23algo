@@ -3,7 +3,7 @@ import numpy as np
 
 
 DISTANCE_CUTOFF = 25
-CLS_IDX_TO_NAME = {1: "TC", 2: "BC"}
+CLS_IDX_TO_NAME = {1: "BC", 2: "TC"}
 
 
 def _check_validity(inp):
