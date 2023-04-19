@@ -28,7 +28,7 @@ def _check_validity(inp):
         assert type(cell["probability"]) is float and 0.0 <= cell["probability"] <= 1.0
 
 
-def _convert_format(pred_json, gt_json):
+def _convert_format(pred_json, gt_json, num_images):
     """ Helper function that converts the format for easy score computation.
 
     Parameters
@@ -47,6 +47,9 @@ def _convert_format(pred_json, gt_json):
         Value of `point` key is a list of three elements, x, y, and cls.
         Value of `probability` key is always 1.0.
     
+    num_images: int
+        Number of images.
+    
     Returns
     -------
     pred_after_convert: List[List[Tuple(int, int, int, float)]]
@@ -59,18 +62,15 @@ def _convert_format(pred_json, gt_json):
         Each patch contains list of tuples, each element corresponds a single cell.
         Each GT cell consist of x, y, cls, prob (always 1.0).
     """
-
-    img_indices = sorted(list(set([int(gt_cell["name"].split("_")[-1]) for gt_cell in gt_json])))
-    assert img_indices == list(range(len(img_indices)))
     
-    pred_after_convert = [[] for _ in range(len(img_indices))]
+    pred_after_convert = [[] for _ in range(num_images)]
     for pred_cell in pred_json:
         x, y, c = pred_cell["point"]
         prob = pred_cell["probability"]
         img_idx = int(pred_cell["name"].split("_")[-1])
         pred_after_convert[img_idx].append((x, y, c, prob))
 
-    gt_after_convert = [[] for _ in range(len(img_indices))]
+    gt_after_convert = [[] for _ in range(num_images)]
     for gt_cell in gt_json:
         x, y, c = gt_cell["point"]
         prob = gt_cell["probability"]
@@ -181,11 +181,11 @@ def _calc_scores(all_sample_result, cls_idx, cutoff):
         global_num_tp += num_tp
         global_num_fp += num_fp
         
-    precision = global_num_tp / (global_num_tp + global_num_fp)
-    recall = global_num_tp / global_num_gt
-    f1 = 2 * precision * recall / (precision + recall)
+    precision = global_num_tp / (global_num_tp + global_num_fp + 1e-7)
+    recall = global_num_tp / (global_num_gt + 1e-7)
+    f1 = 2 * precision * recall / (precision + recall + 1e-7)
 
-    return precision, recall, f1
+    return round(precision, 4), round(recall, 4), round(f1, 4)
 
 
 def main():
@@ -206,13 +206,14 @@ def main():
     gt_path = "cell_gt.json"
     with open(gt_path, "r") as f:
         gt_json = json.load(f)["points"]
+        num_images = json.load(f)["num_images"]
 
     # Check the validity (e.g. type) of algorithm output
     _check_validity(pred_json)
     _check_validity(gt_json)
 
     # Convert the format of GT and pred for easy score computation
-    pred_all, gt_all = _convert_format(pred_json, gt_json)
+    pred_all, gt_all = _convert_format(pred_json, gt_json, num_images)
 
     # For each sample, get distance and confidence by comparing prediction and GT
     all_sample_result = _preprocess_distance_and_confidence(pred_all, gt_all)
@@ -228,5 +229,5 @@ def main():
     scores["mF1"] = sum([
         scores[f"F1/{cls_name}"] for cls_name in CLS_IDX_TO_NAME.values()
     ]) / len(CLS_IDX_TO_NAME)
-
+    
     return scores
