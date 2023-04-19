@@ -1,6 +1,6 @@
 # OCELOT23: The algorithm
  
-In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) algorithm container. We highly recommend using this repository as template for your algorithm submissions. For more information about our work refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
+In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) algorithm container. We highly recommend using this repository as template for your algorithm submissions. The main purpose of your algorithm submission is to run only inference on the validation and test cell and tissue images already living in the GC platform. For more information about our work refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
 
  
 # Input and output
@@ -33,15 +33,15 @@ We already implemented for you the input/output interface for loading the input 
             "probability": 1.0
         },
 ```
-Where each cell prediction requires the following information:
+Each cell prediction requires the following information:
 
-* `name`: cell patch identifier, which is composed of the keyword `image` followed by the sequential image ID of the cell patch. The ID is the same as the one provided by the `DataLoader`.
+* `name`: cell patch identifier, which is composed of the keyword `image` followed by the sequential image ID of the cell patch. The ID is the same as the one provided by the `DataLoader`, i.e. `pair_id` at `process.py`.
 * `point`: list of three integer, i.e. x, y and class ID.
 * `probability`: confidence score of the predicted cell.
 
 # Develop you algorithm
 
-At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to propose a new algorithm by modifying the function `process_patch_pair` while keeping the output format. Also, feel free to install any framework, such as PyTorch or Tensorflow by adding your dependencies in `requirements.txt`.
+At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to propose a new algorithm by modifying the function `process_patch_pair` while keeping the output format. Also, feel free to install any framework, such as PyTorch or Tensorflow by adding your dependencies in `requirements.txt`. The entry-point to this container is `process.py`, please make sure your inference code is called in the data loading loop. Here a simply inference implementation:
 
 ```python
 def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
@@ -90,13 +90,13 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     # - int: class id of the cell, either 1 (BC) or 2 (TC)
     # - float: confidence score of the predicted cell
     return list(zip(xs, ys, class_id, probs))
-```
 
+```
 # Submitting to GC
 
-To submit your algorithm to the GC platform, you'll need to export the docker container with your all the required elements to run inference on the patches.
+To submit your algorithm to the GC platform, you'll need to export the docker container with all the required ingredients to run your inference. We have three simple bash scripts that might be helpful for you.
 
-### Build your docker image
+## Build your docker image
 
 Build your image with the next command:
 
@@ -104,17 +104,17 @@ Build your image with the next command:
 bash build.sh
 ```
 
-### Testing before submitting to GC
+## Testing before submitting to GC
 
-Before submitting your containers to GC, make sure the proposed test works successfully in your local machine. The script `test.sh` will create the image, run a container and verify that the output file `cell_predictions.json` is generated at the designated output directory. To do so, simply run the following command:
+Before submitting your containers to GC, make sure a simple test works successfully in your local machine. The script `test.sh` will create the image, run a container and verify that the output file `cell_predictions.json` is generated at the designated directory. To do so, simply run the following command:
 
 ```bash
 bash test.sh
 ```
 
-### Export algorithm docker image
+## Export algorithm docker image
 
-Generate the `tar` file to be uploaded to GC by with the command:
+Generate the `tar` file to be uploaded to GC with the command:
 
 ```bash
 bash export.sh
