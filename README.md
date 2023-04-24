@@ -41,7 +41,7 @@ Each cell prediction requires the following information:
 * `point`: list of three integer, i.e. x, y and class ID.
 * `probability`: confidence score of the predicted cell.
 
-# Develop you algorithm
+# Develop your algorithm
 
 At `user/inference.py` you will find a dummy cell detection algorithm. Your task is to propose a new algorithm by modifying the function `process_patch_pair` while keeping the output format. Also, feel free to install any framework, such as PyTorch or Tensorflow by adding your dependencies in `requirements.txt`. The entry-point to this container is `process.py`, please make sure your inference code is called in the data loading loop. Here a simply inference implementation:
 

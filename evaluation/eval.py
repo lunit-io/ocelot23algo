@@ -230,4 +230,4 @@ def main():
         scores[f"F1/{cls_name}"] for cls_name in CLS_IDX_TO_NAME.values()
     ]) / len(CLS_IDX_TO_NAME)
     
-    return scores
+    print(scores)
