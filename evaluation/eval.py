@@ -2,7 +2,8 @@ import re
 import numpy as np
 
 
-DISTANCE_CUTOFF = 25
+### These are fixed, don't change!
+DISTANCE_CUTOFF = 15
 CLS_IDX_TO_NAME = {1: "BC", 2: "TC"}
 
 
