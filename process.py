@@ -5,7 +5,7 @@ from util.constants import (
     GC_METADATA_FPATH,
     GC_DETECTION_OUTPUT_PATH
 )
-from user.inference import process_patch_pair
+from user.inference import Model
 
 
 def process():
@@ -21,14 +21,14 @@ def process():
     # Loading metadata
     meta_dataset = gcio.read_json(GC_METADATA_FPATH)
 
+    # Instantiate the inferring model
+    model = Model(meta_dataset)
+
     # NOTE: Batch size is 1
     for cell_patch, tissue_patch, pair_id in loader:
         print(f"Processing sample pair {pair_id}")
         # Cell-tissue patch pair inference
-        cell_classification = process_patch_pair(cell_patch, 
-                                    tissue_patch, 
-                                    pair_id,
-                                    meta_dataset)
+        cell_classification = model(cell_patch, tissue_patch, pair_id)
         
         # Updating predictions
         writer.add_points(cell_classification, pair_id)
