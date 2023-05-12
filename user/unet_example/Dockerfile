@@ -15,8 +15,8 @@ RUN python -m pip install --user -U pip && python -m pip install --user pip-tool
 
 COPY ./ /opt/app/
 
-RUN python -m piptools sync requirements.txt
-
+RUN pip install --no-cache-dir --upgrade pip \
+  && pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=user:user process.py /opt/app/
 
