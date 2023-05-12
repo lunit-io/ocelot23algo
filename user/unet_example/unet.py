@@ -2,6 +2,10 @@
 
 NOTE: this code is mainly taken from: https://github.com/milesial/Pytorch-UNet
 """
+import numpy as np
+from skimage import feature
+import cv2
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -126,6 +130,11 @@ class UNet(nn.Module):
 
 class PytorchUnetCellModel():
     """
+    U-NET model for cell detection implemented with the Pytorch library
+
+    NOTE: this model does not utilize the tissue patch but rather
+    only the cell patch.
+
     Parameters
     ----------
     metadata: Dict
@@ -133,19 +142,75 @@ class PytorchUnetCellModel():
 
     """
     def __init__(self, metadata):
+        self.device = torch.device('cuda:0')
         self.metadata = metadata
         # RGB images and 2 class prediction
-        self.unet = UNet(in_channel=3, in_channels=2)
+        self.n_classes =  3 # Two cell classes and background
+        self.unet = UNet(in_channel=3, n_classes=self.n_classes).to(self.device)
         self.load_checkpoint()
 
     def load_checkpoint(self):
-        _PATH = "checkpoint.pth"
-        state_dict = torch.load(_PATH)
-        self.unet()
-
-        self.unet.cuda()
+        # _PATH = "checkpoint.pth"
+        # state_dict = torch.load(_PATH)
+        # self.unet()
         self.unet.eval()
 
+    def prepare_input(self, cell_path):
+        """This function prepares the cell patch array to be forwarded by
+        the model
+
+        Parameters
+        ----------
+        cell_patch: np.ndarray[uint8]
+            Cell patch with shape [1024, 1024, 3] with values from 0 - 255
+
+        Returns
+        -------
+            torch.tensor of shape [1, 3, 1024, 1024] where the first axis is the batch
+            dimension
+        """
+        cell_patch = torch.from_numpy(cell_patch).permute((2, 0, 1)).unsqueeze(0)
+        cell_patch = self.cell_patch.to(self.device, dtype=torch.float64)
+        return cell_patch/255 # normalize [0-1]
+
+    def find_cells(self, heatmap):
+        """This function detects the cells in the output heatmap
+
+        Parameters
+        ----------
+        heatmap: torch.tensor
+            output heatmap of the model,  shape: [1, 3, 1024, 1024]
+
+        Returns
+        -------
+            List[tuple]: for each predicted cell we provide the tuple (x, y, cls, score)
+        """
+        arr = heatmap[0,:,:,:].cpu().numpy()
+        # arr = np.transpose(arr, (1, 2, 0)) # CHW -> HWC
+        bg, pred_wo_bg = np.split(arr, (1,), axis=0) # Background and non-background channels
+        bg = np.squeeze(bg, axis=0)
+        obj = 1.0 - bg
+
+        arr = cv2.GaussianBlur(obj, (0, 0), sigmaX=3)
+        peaks = feature.peak_local_max(
+            arr, min_distance=14, exclude_border=0, threshold_abs=0.0
+        ) # List[y, x]
+
+        maxval = np.max(pred_wo_bg, axis=0)
+        maxcls_0 = np.argmax(pred_wo_bg, axis=0)
+
+        # Filter out peaks if background score dominates
+        peaks = np.array([peak for peak in peaks if bg[peak[0], peak[1]] < maxval[peak[0], peak[1]]])
+        if len(peaks) == 0:
+            return []
+
+        # Get score and class of the peaks
+        scores = maxval[peaks[:, 0], peaks[:, 1]]
+        peak_class = maxcls_0[peaks[:, 0], peaks[:, 1]]
+
+        predicted_cells = [(x,y,c,s) for [y, x], c, s in zip(peaks, peak_class, scores)]
+
+        return predicted_cells
 
     def __call__(self, cell_patch, tissue_patch, pair_id):
         """This function detects the cells in the cell patch using Pytorch U-Net.
@@ -163,11 +228,6 @@ class PytorchUnetCellModel():
         -------
             List[tuple]: for each predicted cell we provide the tuple (x, y, cls, score)
         """
-        # Reshapping input patch
-
-        # Infering
-        logits = self.unet(cell_patch)
-
-        # Detect peaks in the output
-        # peak_finding()
-        return 
+        cell_patch = self.prepare_input(cell_patch)
+        heatmap = torch.softmax(self.unet(cell_patch), dim=1)
+        return self.find_cells(heatmap)
