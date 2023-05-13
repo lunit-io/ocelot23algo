@@ -146,7 +146,7 @@ class PytorchUnetCellModel():
         self.metadata = metadata
         # RGB images and 2 class prediction
         self.n_classes =  3 # Two cell classes and background
-        self.unet = UNet(in_channel=3, n_classes=self.n_classes).to(self.device)
+        self.unet = UNet(n_channels=3, n_classes=self.n_classes).to(self.device)
         self.load_checkpoint()
 
     def load_checkpoint(self):
@@ -155,7 +155,7 @@ class PytorchUnetCellModel():
         # self.unet()
         self.unet.eval()
 
-    def prepare_input(self, cell_path):
+    def prepare_input(self, cell_patch):
         """This function prepares the cell patch array to be forwarded by
         the model
 
@@ -170,8 +170,8 @@ class PytorchUnetCellModel():
             dimension
         """
         cell_patch = torch.from_numpy(cell_patch).permute((2, 0, 1)).unsqueeze(0)
-        cell_patch = self.cell_patch.to(self.device, dtype=torch.float64)
-        return cell_patch/255 # normalize [0-1]
+        cell_patch = cell_patch.to(self.device).type(torch.cuda.FloatTensor)
+        return cell_patch / 255 # normalize [0-1]
 
     def find_cells(self, heatmap):
         """This function detects the cells in the output heatmap
@@ -185,8 +185,9 @@ class PytorchUnetCellModel():
         -------
             List[tuple]: for each predicted cell we provide the tuple (x, y, cls, score)
         """
-        arr = heatmap[0,:,:,:].cpu().numpy()
+        arr = heatmap[0,:,:,:].cpu().detach().numpy()
         # arr = np.transpose(arr, (1, 2, 0)) # CHW -> HWC
+
         bg, pred_wo_bg = np.split(arr, (1,), axis=0) # Background and non-background channels
         bg = np.squeeze(bg, axis=0)
         obj = 1.0 - bg
@@ -208,7 +209,7 @@ class PytorchUnetCellModel():
         scores = maxval[peaks[:, 0], peaks[:, 1]]
         peak_class = maxcls_0[peaks[:, 0], peaks[:, 1]]
 
-        predicted_cells = [(x,y,c,s) for [y, x], c, s in zip(peaks, peak_class, scores)]
+        predicted_cells = [(x,y,c,float(s)) for [y, x], c, s in zip(peaks, peak_class, scores)]
 
         return predicted_cells
 
