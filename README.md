@@ -4,7 +4,6 @@
  
 In this repository, you can find the source code for the [Grand Challenge OCELOT 23](https://ocelot2023.grand-challenge.org/) **algorithm container**. We highly recommend using this repository as template for your algorithm submissions. The main purpose of your algorithm submission is to run only inference on the validation and test cell and tissue images already living in the GC platform. For more information about our work refer to our [page](https://lunit-io.github.io/research/publications/ocelot/).
 
- 
 # Input and output
  
 We already implemented for you the input/output interface for loading the input images stored in the platform and writing the cell predictions. Here the relevant code:
@@ -94,6 +93,9 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
     return list(zip(xs, ys, class_id, probs))
 
 ```
+
+For more inference examples, please visit `/ocelot23algo/user/unet_example/`. 
+
 # Submitting to GC
 
 To submit your algorithm to the GC platform, you'll need to export the docker container with all the required ingredients to run your inference. We have three simple bash scripts that might be helpful for you.
