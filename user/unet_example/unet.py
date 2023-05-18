@@ -2,6 +2,7 @@
 
 NOTE: this code is mainly taken from: https://github.com/milesial/Pytorch-UNet
 """
+import os
 import numpy as np
 from skimage import feature
 import cv2
@@ -148,7 +149,7 @@ class PytorchUnetCellModel():
         _path_to_checkpoint = os.path.join(_curr_path, "checkpoints/ocelot_unet.pth")
         state_dict = torch.load(_path_to_checkpoint, map_location=torch.device('cpu'))
         self.unet.load_state_dict(state_dict, strict=True)
-        print("Weights were successfully loaded!.")
+        print("Weights were successfully loaded!")
 
     def prepare_input(self, cell_patch):
         """This function prepares the cell patch array to be forwarded by
@@ -165,7 +166,7 @@ class PytorchUnetCellModel():
             dimension
         """
         cell_patch = torch.from_numpy(cell_patch).permute((2, 0, 1)).unsqueeze(0)
-        cell_patch = self.cell_patch.to(self.device, dtype=torch.float64)
+        cell_patch = cell_patch.to(self.device).type(torch.cuda.FloatTensor)
         cell_patch = cell_patch / 255 # normalize [0-1]
         if self.resize_to is not None:
             cell_patch= F.interpolate(
@@ -209,7 +210,7 @@ class PytorchUnetCellModel():
         scores = maxval[peaks[:, 0], peaks[:, 1]]
         peak_class = maxcls_0[peaks[:, 0], peaks[:, 1]]
 
-        predicted_cells = [(x,y,c,float(s)) for [y, x], c, s in zip(peaks, peak_class, scores)]
+        predicted_cells = [(x, y, c + 1, float(s)) for [y, x], c, s in zip(peaks, peak_class, scores)]
 
         return predicted_cells
 
@@ -230,8 +231,7 @@ class PytorchUnetCellModel():
             logits = F.interpolate(logits, size=SAMPLE_SHAPE[:2],
                 mode='bilinear', align_corners=False
             )
-        return torch.sofmax(logits, dim=1)
-
+        return torch.softmax(logits, dim=1)
 
     def __call__(self, cell_patch, tissue_patch, pair_id):
         """This function detects the cells in the cell patch using Pytorch U-Net.
