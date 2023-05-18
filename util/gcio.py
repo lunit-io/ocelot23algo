@@ -5,7 +5,7 @@ from PIL import Image
 import json
 from typing import List
 
-SAMPLE_SHAPE = (1024,1024,3)
+from util.constants import SAMPLE_SHAPE
 
 
 def read_json(fpath: Path) -> dict:

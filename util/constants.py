@@ -8,3 +8,7 @@ GC_METADATA_FPATH = Path("/input/metadata.json")
 
 # Grand Challenge output file
 GC_DETECTION_OUTPUT_PATH = Path("/output/cell_classification.json")
+
+# Sample dimensions
+SAMPLE_SHAPE = (1024, 1024, 3)
+
