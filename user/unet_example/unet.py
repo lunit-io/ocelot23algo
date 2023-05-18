@@ -5,6 +5,7 @@ NOTE: this code is mainly taken from: https://github.com/milesial/Pytorch-UNet
 import numpy as np
 from skimage import feature
 import cv2
+from util.constants import SAMPLE_SHAPE
 
 import torch
 import torch.nn as nn
@@ -115,18 +116,6 @@ class UNet(nn.Module):
         logits = self.outc(x)
         return logits
 
-    def use_checkpointing(self):
-        self.inc = torch.utils.checkpoint(self.inc)
-        self.down1 = torch.utils.checkpoint(self.down1)
-        self.down2 = torch.utils.checkpoint(self.down2)
-        self.down3 = torch.utils.checkpoint(self.down3)
-        self.down4 = torch.utils.checkpoint(self.down4)
-        self.up1 = torch.utils.checkpoint(self.up1)
-        self.up2 = torch.utils.checkpoint(self.up2)
-        self.up3 = torch.utils.checkpoint(self.up3)
-        self.up4 = torch.utils.checkpoint(self.up4)
-        self.outc = torch.utils.checkpoint(self.outc)
-
 
 class PytorchUnetCellModel():
     """
@@ -144,16 +133,22 @@ class PytorchUnetCellModel():
     def __init__(self, metadata):
         self.device = torch.device('cuda:0')
         self.metadata = metadata
+        self.resize_to = (512, 512) # The model is trained with 512 resolution
         # RGB images and 2 class prediction
         self.n_classes =  3 # Two cell classes and background
-        self.unet = UNet(n_channels=3, n_classes=self.n_classes).to(self.device)
+
+        self.unet = UNet(n_channels=3, n_classes=self.n_classes)
         self.load_checkpoint()
+        self.unet = self.unet.to(self.device)
+        self.unet.eval()
 
     def load_checkpoint(self):
-        # _PATH = "checkpoint.pth"
-        # state_dict = torch.load(_PATH)
-        # self.unet()
-        self.unet.eval()
+        """Loading the trained weights to be used for validation"""
+        _curr_path = os.path.split(__file__)[0]
+        _path_to_checkpoint = os.path.join(_curr_path, "checkpoints/ocelot_unet.pth")
+        state_dict = torch.load(_path_to_checkpoint, map_location=torch.device('cpu'))
+        self.unet.load_state_dict(state_dict, strict=True)
+        print("Weights were successfully loaded!.")
 
     def prepare_input(self, cell_patch):
         """This function prepares the cell patch array to be forwarded by
@@ -170,9 +165,14 @@ class PytorchUnetCellModel():
             dimension
         """
         cell_patch = torch.from_numpy(cell_patch).permute((2, 0, 1)).unsqueeze(0)
-        cell_patch = cell_patch.to(self.device).type(torch.cuda.FloatTensor)
-        return cell_patch / 255 # normalize [0-1]
-
+        cell_patch = self.cell_patch.to(self.device, dtype=torch.float64)
+        cell_patch = cell_patch / 255 # normalize [0-1]
+        if self.resize_to is not None:
+            cell_patch= F.interpolate(
+                    cell_patch, size=self.resize_to, mode="bilinear", align_corners=True
+            ).detach()
+        return cell_patch
+        
     def find_cells(self, heatmap):
         """This function detects the cells in the output heatmap
 
@@ -213,6 +213,26 @@ class PytorchUnetCellModel():
 
         return predicted_cells
 
+    def post_process(self, logits):
+        """This function applies some post processing to the
+        output logits
+        
+        Parameters
+        ----------
+        logits: torch.tensor
+            Outputs of U-Net
+
+        Returns
+        -------
+            torch.tensor after post processing the logits
+        """
+        if self.resize_to is not None:
+            logits = F.interpolate(logits, size=SAMPLE_SHAPE[:2],
+                mode='bilinear', align_corners=False
+            )
+        return torch.sofmax(logits, dim=1)
+
+
     def __call__(self, cell_patch, tissue_patch, pair_id):
         """This function detects the cells in the cell patch using Pytorch U-Net.
 
@@ -230,5 +250,6 @@ class PytorchUnetCellModel():
             List[tuple]: for each predicted cell we provide the tuple (x, y, cls, score)
         """
         cell_patch = self.prepare_input(cell_patch)
-        heatmap = torch.softmax(self.unet(cell_patch), dim=1)
+        logits = self.unet(cell_patch)
+        heatmap = self.post_process(logits)
         return self.find_cells(heatmap)
