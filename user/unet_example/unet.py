@@ -195,7 +195,7 @@ class PytorchUnetCellModel():
 
         arr = cv2.GaussianBlur(obj, (0, 0), sigmaX=3)
         peaks = feature.peak_local_max(
-            arr, min_distance=14, exclude_border=0, threshold_abs=0.0
+            arr, min_distance=3, exclude_border=0, threshold_abs=0.0
         ) # List[y, x]
 
         maxval = np.max(pred_wo_bg, axis=0)
