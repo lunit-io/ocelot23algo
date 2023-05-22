@@ -94,7 +94,7 @@ def process_patch_pair(cell_patch, tissue_patch, pair_id, meta_dataset):
 
 ```
 
-For more inference examples, please visit `/ocelot23algo/user/unet_example/`. 
+To guide participants with a real-world example, we provide a simple baseline algorithm that uses the U-Net architecture. For more details, please visit `ocelot23algo/user/unet_example/`.
 
 # Submitting to GC
 
