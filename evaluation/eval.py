@@ -110,6 +110,8 @@ def _preprocess_distance_and_confidence(pred_all, gt_all):
         for cls_idx in sorted(list(CLS_IDX_TO_NAME.keys())):
             pred_cls = np.array([p for p in pred if p[2] == cls_idx], np.float32)
             gt_cls = np.array([g for g in gt if g[2] == cls_idx], np.float32)
+            if len(gt_cls) == 0:
+                gt_cls = np.zeros(shape=(0, 4))
             
             if len(pred_cls) == 0:
                 distance = np.zeros([0, len(gt_cls)])
