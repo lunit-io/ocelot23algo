@@ -137,5 +137,3 @@ Cite our work!
     pages = {23902-23912}
 }
 ```
-
-**NOTE**: We will update the citation when CVPR publicly release the proceedings!
