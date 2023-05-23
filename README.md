@@ -128,13 +128,13 @@ bash export.sh
 
 Cite our work!
 ```
-@misc{ryu2023ocelot,
-      title={OCELOT: Overlapped Cell on Tissue Dataset for Histopathology}, 
-      author={Jeongun Ryu and Aaron Valero Puche and JaeWoong Shin and Seonwook Park and Biagio Brattoli and Jinhee Lee and Wonkyung Jung and Soo Ick Cho and Kyunghyun Paeng and Chan-Young Ock and Donggeun Yoo and Sérgio Pereira},
-      year={2023},
-      eprint={2303.13110},
-      archivePrefix={arXiv},
-      primaryClass={eess.IV}
+@InProceedings{Ryu_2023_CVPR,
+    author = {Ryu, Jeongun and Puche, Aaron Valero and Shin, JaeWoong and Park, Seonwook and Brattoli, Biagio and Lee, Jinhee and Jung, Wonkyung and Cho, Soo Ick and Paeng, Kyunghyun and Ock, Chan-Young and Yoo, Donggeun and Pereira, S\'ergio},
+    title = {OCELOT: Overlapped Cell on Tissue Dataset for Histopathology},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month = {June},
+    year = {2023},
+    pages = {23902-23912}
 }
 ```
 
