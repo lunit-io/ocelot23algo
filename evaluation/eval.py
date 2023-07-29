@@ -120,7 +120,7 @@ def _preprocess_distance_and_confidence(pred_all, gt_all):
                 pred_loc = pred_cls[:, :2].reshape([-1, 1, 2])
                 gt_loc = gt_cls[:, :2].reshape([1, -1, 2])
                 distance = np.linalg.norm(pred_loc - gt_loc, axis=2)
-                confidence = pred_cls[:, 2]
+                confidence = pred_cls[:, 3]
 
             one_sample_result[cls_idx] = (distance, confidence)
 
